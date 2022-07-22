@@ -614,7 +614,8 @@ describe('AMT Tests', () => {
     it('should return a valid amt_AlarmClockService ADD_ALARM wsman message', () => {
       const instanceID = 'Instance'
       const elementName = 'Alarm instance name'
-      const startTime = '2022-12-31T23:59:59Z'
+      // Start time must be on the minute - seconds must be 00
+      const startTime = '2022-12-31T23:59:00Z'
       // The interval is in minutes
       const minutes = 59
       const hours = 23
