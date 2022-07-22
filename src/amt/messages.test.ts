@@ -612,14 +612,24 @@ describe('AMT Tests', () => {
   })
   describe('AlarmClockService Tests', () => {
     it('should return a valid amt_AlarmClockService ADD_ALARM wsman message', () => {
+      const instanceID = 'Instance'
+      const elementName = 'Alarm instance name'
+      const startTime = '2022-12-31T23:59:59Z'
+      // The interval is in minutes
+      const minutes = 59
+      const hours = 23
+      const days = 1
+      const interval = minutes + hours * 60 + days * 1440
+      const deleteOnCompletion = true
       let correctResponse = `${xmlHeader}${envelope}http://intel.com/wbem/wscim/1/amt-schema/1/AMT_AlarmClockService/AddAlarm</a:Action><a:To>/wsman</a:To><w:ResourceURI>http://intel.com/wbem/wscim/1/amt-schema/1/AMT_AlarmClockService</w:ResourceURI><a:MessageID>0</a:MessageID><a:ReplyTo><a:Address>http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous</a:Address></a:ReplyTo><w:OperationTimeout>PT60S</w:OperationTimeout></Header>`
       correctResponse += '<Body><p:AddAlarm_INPUT xmlns:p="http://intel.com/wbem/wscim/1/amt-schema/1/AMT_AlarmClockService"><p:AlarmTemplate>'
-      correctResponse += '<s:InstanceID xmlns:s="http://intel.com/wbem/wscim/1/ips-schema/1/IPS_AlarmClockOccurrence">Instance</s:InstanceID>'
-      correctResponse += '<s:StartTime xmlns:s="http://intel.com/wbem/wscim/1/ips-schema/1/IPS_AlarmClockOccurrence"><p:Datetime xmlns:p="http://schemas.dmtf.org/wbem/wscim/1/common">2022-12-31T23:59:59Z</p:Datetime></s:StartTime>'
-      correctResponse += '<s:Interval xmlns:s="http://intel.com/wbem/wscim/1/ips-schema/1/IPS_AlarmClockOccurrence"><p:Interval xmlns:p="http://schemas.dmtf.org/wbem/wscim/1/common">P1DT23H59M</p:Interval></s:Interval>'
-      correctResponse += '<s:DeleteOnCompletion xmlns:s="http://intel.com/wbem/wscim/1/ips-schema/1/IPS_AlarmClockOccurrence">true</s:DeleteOnCompletion>'
+      correctResponse += `<s:InstanceID xmlns:s="http://intel.com/wbem/wscim/1/ips-schema/1/IPS_AlarmClockOccurrence">${instanceID}</s:InstanceID>`
+      correctResponse += `<s:ElementName xmlns:s="http://intel.com/wbem/wscim/1/ips-schema/1/IPS_AlarmClockOccurrence">${elementName}</s:ElementName>`
+      correctResponse += `<s:StartTime xmlns:s="http://intel.com/wbem/wscim/1/ips-schema/1/IPS_AlarmClockOccurrence"><p:Datetime xmlns:p="http://schemas.dmtf.org/wbem/wscim/1/common">${startTime}</p:Datetime></s:StartTime>`
+      correctResponse += `<s:Interval xmlns:s="http://intel.com/wbem/wscim/1/ips-schema/1/IPS_AlarmClockOccurrence"><p:Interval xmlns:p="http://schemas.dmtf.org/wbem/wscim/1/common">P${days}DT${hours}H${minutes}M</p:Interval></s:Interval>`
+      correctResponse += `<s:DeleteOnCompletion xmlns:s="http://intel.com/wbem/wscim/1/ips-schema/1/IPS_AlarmClockOccurrence">${String(deleteOnCompletion)}</s:DeleteOnCompletion>`
       correctResponse += '</p:AlarmTemplate></p:AddAlarm_INPUT></Body></Envelope>'
-      const response = amtClass.AlarmClockService(Methods.ADD_ALARM, { InstanceID: 'Instance', StartTime: new Date('2022-12-31T23:59:59Z'), Interval: 2879, DeleteOnCompletion: true })
+      const response = amtClass.AlarmClockService(Methods.ADD_ALARM, { InstanceID: instanceID, ElementName: elementName, StartTime: new Date(startTime), Interval: interval, DeleteOnCompletion: deleteOnCompletion })
       expect(response).toEqual(correctResponse)
     })
     it('should throw error if data is missing from amt_AlarmClockService AddAlarm method', () => {

@@ -434,8 +434,13 @@ export class Messages {
       case Methods.ADD_ALARM: {
         if (data == null) { throw new Error(WSManErrors.ADD_ALARM_DATA) }
         const header = this.wsmanMessageCreator.createHeader(Actions.ADD_ALARM, `${this.resourceUriBase}${Classes.AMT_ALARM_CLOCK_SERVICE}`)
-        const startTime = data.StartTime.toISOString().replace(/\..+Z/, 'Z')
-        let body = `<Body><p:AddAlarm_INPUT xmlns:p="http://intel.com/wbem/wscim/1/amt-schema/1/AMT_AlarmClockService"><p:AlarmTemplate><s:InstanceID xmlns:s="http://intel.com/wbem/wscim/1/ips-schema/1/IPS_AlarmClockOccurrence">${data.InstanceID}</s:InstanceID><s:StartTime xmlns:s="http://intel.com/wbem/wscim/1/ips-schema/1/IPS_AlarmClockOccurrence"><p:Datetime xmlns:p="http://schemas.dmtf.org/wbem/wscim/1/common">${startTime}</p:Datetime></s:StartTime>`
+        // toIsoString() is adding milliseconds... remove them by taking everything before the '.' and adding back the 'Z'
+        const startTime = data.StartTime.toISOString().split('.')[0] + 'Z'
+        let body = `<Body><p:AddAlarm_INPUT xmlns:p="http://intel.com/wbem/wscim/1/amt-schema/1/AMT_AlarmClockService"><p:AlarmTemplate><s:InstanceID xmlns:s="http://intel.com/wbem/wscim/1/ips-schema/1/IPS_AlarmClockOccurrence">${data.InstanceID}</s:InstanceID>`
+        if (data.ElementName != null) {
+          body += `<s:ElementName xmlns:s="http://intel.com/wbem/wscim/1/ips-schema/1/IPS_AlarmClockOccurrence">${data.ElementName}</s:ElementName>`
+        }
+        body += `<s:StartTime xmlns:s="http://intel.com/wbem/wscim/1/ips-schema/1/IPS_AlarmClockOccurrence"><p:Datetime xmlns:p="http://schemas.dmtf.org/wbem/wscim/1/common">${startTime}</p:Datetime></s:StartTime>`
         if (data.Interval != null) {
           const minutes: number = data.Interval % 60
           const hours: number = Math.floor(data.Interval / 60) % 24
