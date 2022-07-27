@@ -35,7 +35,6 @@ export interface SendOptInCode_OUTPUT {
 }
 
 export interface AlarmClockOccurrence extends ManagedElement {
-  ElementName?: string
   InstanceID: string
   StartTime: Date
   Interval?: number

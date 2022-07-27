@@ -37,7 +37,6 @@ export interface SendOptInCode_OUTPUT {
 }
 
 export interface IPS_AlarmClockOccurrence extends CIM_ManagedElement {
-  ElementName?: string
   InstanceID: string
   StartTime: Date
   Interval?: number

@@ -5,7 +5,6 @@
 
 import * as CIM from '../cim'
 import { NetworkPortConfigurationService } from '../cim/models'
-import { AlarmClockOccurrence } from '../ips/models'
 
 export interface AMTAuthenticateObject {
   nonce?: number[]
@@ -354,10 +353,4 @@ export interface RemoteAccessPolicyAppliesToMPS extends CIM.Models.PolicySetAppl
   MpsType: number
 }
 
-export interface AlarmClockService extends CIM.Models.Service {
-  Name: string
-  CreationClassName: string
-  SystemName: string
-  SystemCreationClassName: string
-  ElementName: string
-}
+export interface AlarmClockService extends CIM.Models.Service { }
